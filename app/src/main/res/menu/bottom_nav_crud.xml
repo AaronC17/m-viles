@@ -9,4 +9,5 @@
         android:id="@+id/nav_add_work"
         android:icon="@drawable/ic_add"
         android:title="Agregar Trabajo" />
+
 </menu>
