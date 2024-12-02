@@ -24,10 +24,6 @@
         <activity android:name=".LoginActivity"
             android:exported="false" /> <!-- No tiene un Intent Filter, no necesita ser exportada -->
 
-        <!-- Otra actividad -->
-        <activity android:name=".ResearchListActivity"
-            android:exported="false" />
-
         <activity android:name=".SignUpActivity"
             android:exported="false" />
 

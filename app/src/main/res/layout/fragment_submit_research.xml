@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Título de la investigación -->
+    <EditText
+        android:id="@+id/titleEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Título de la investigación" />
+
+    <!-- Área de interés (Spinner) -->
+    <Spinner
+        android:id="@+id/areaSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Descripción breve -->
+    <EditText
+        android:id="@+id/descriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descripción breve (500 caracteres)"
+        android:maxLength="500"
+        android:inputType="textMultiLine" />
+
+    <!-- Subir documento PDF -->
+    <Button
+        android:id="@+id/uploadPdfButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subir PDF" />
+
+    <!-- Subir imágenes -->
+    <Button
+        android:id="@+id/uploadImagesButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subir Imágenes" />
+
+    <!-- Conclusiones -->
+    <EditText
+        android:id="@+id/conclusionsEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Conclusiones (500 caracteres)"
+        android:maxLength="500"
+        android:inputType="textMultiLine" />
+
+    <!-- Recomendaciones -->
+    <EditText
+        android:id="@+id/recommendationsEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Recomendaciones (500 caracteres)"
+        android:maxLength="500"
+        android:inputType="textMultiLine" />
+
+    <!-- Botón para enviar el trabajo -->
+    <Button
+        android:id="@+id/submitResearchButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enviar Trabajo" />
+</LinearLayout>

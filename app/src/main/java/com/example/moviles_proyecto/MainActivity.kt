@@ -26,12 +26,6 @@ class MainActivity : AppCompatActivity() {
             finish() // Cierra MainActivity para evitar que el usuario regrese con el botón atrás
         }
 
-        // Configurar el botón de "Ver trabajos de investigación"
-        val viewResearchButton = findViewById<Button>(R.id.viewResearchButton)
-        viewResearchButton.setOnClickListener {
-            // Cargar el fragmento de trabajos de investigación
-            loadResearchListFragment()
-        }
 
         // Configurar el botón de "Subir Foto"
         val uploadPhotoButton = findViewById<Button>(R.id.uploadPhotoButton)
@@ -52,15 +46,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
-    }
-
-    private fun loadResearchListFragment() {
-        // Verifica si el fragmento ya está cargado para evitar duplicados
-        val fragment = ResearchListFragment()
-        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)  // Usa el contenedor de fragmentos de tu actividad
-        transaction.addToBackStack(null)  // Agrega al back stack para poder navegar hacia atrás
-        transaction.commit()
     }
 
     // Para manejar el resultado del picker de imagen

@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Título del trabajo -->
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="Título" />
+
+    <!-- Área del trabajo -->
+    <TextView
+        android:id="@+id/areaTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Área de Investigación" />
+
+    <!-- Descripción -->
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Descripción" />
+
+    <!-- Conclusiones -->
+    <TextView
+        android:id="@+id/conclusionsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Conclusiones" />
+
+    <!-- Recomendaciones -->
+    <TextView
+        android:id="@+id/recommendationsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recomendaciones" />
+
+    <!-- Comentarios -->
+    <TextView
+        android:text="Comentarios"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold" />
+
+    <!-- RecyclerView para mostrar los comentarios -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/commentsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Campo para agregar nuevo comentario -->
+    <EditText
+        android:id="@+id/commentEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Escribe tu comentario" />
+
+    <!-- Botón para enviar el comentario -->
+    <Button
+        android:id="@+id/submitCommentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enviar Comentario" />
+</LinearLayout>
