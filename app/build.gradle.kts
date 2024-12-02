@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.moviles_proyecto"
-    compileSdk = 35 // Actualizado a 35 para cumplir con los requisitos de las dependencias
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.moviles_proyecto"
@@ -36,7 +36,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    // Habilitar ViewBinding
+    viewBinding {
+        enable = true
+    }
 }
+
+
+
 
 dependencies {
     // Core AndroidX libraries
@@ -62,4 +70,5 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
 }

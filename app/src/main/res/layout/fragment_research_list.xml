@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Filtro por Tema -->
+    <Spinner
+        android:id="@+id/topicSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/gradeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/workButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trabajo 1" />
+
+    <Button
+        android:id="@+id/workButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trabajo 2" />
+
+
+    <!-- RecyclerView para mostrar la lista de trabajos de investigación -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/researchRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"/>
+
+</LinearLayout>

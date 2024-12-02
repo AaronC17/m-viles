@@ -5,21 +5,32 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Botón para ver trabajos de investigación -->
     <Button
         android:id="@+id/viewResearchButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ver Trabajos de Investigación" />
+        android:text="Ver trabajos de investigación" />
 
+    <!-- Botón para subir fotos -->
     <Button
         android:id="@+id/uploadPhotoButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Subir Foto" />
 
+    <!-- Botón para cerrar sesión -->
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cerrar sesión" />
+
+    <!-- Contenedor para fragmentos -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp" />
+
 </LinearLayout>

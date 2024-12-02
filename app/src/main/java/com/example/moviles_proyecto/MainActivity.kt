@@ -1,11 +1,12 @@
 package com.example.moviles_proyecto
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.auth.FirebaseAuth
+import android.content.Intent
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,9 +29,8 @@ class MainActivity : AppCompatActivity() {
         // Configurar el botón de "Ver trabajos de investigación"
         val viewResearchButton = findViewById<Button>(R.id.viewResearchButton)
         viewResearchButton.setOnClickListener {
-            // Redirigir a una actividad para mostrar los trabajos de investigación
-            // Si tienes una actividad específica para eso:
-            startActivity(Intent(this, ResearchListActivity::class.java))
+            // Cargar el fragmento de trabajos de investigación
+            loadResearchListFragment()
         }
 
         // Configurar el botón de "Subir Foto"
@@ -52,6 +52,15 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
+    }
+
+    private fun loadResearchListFragment() {
+        // Verifica si el fragmento ya está cargado para evitar duplicados
+        val fragment = ResearchListFragment()
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)  // Usa el contenedor de fragmentos de tu actividad
+        transaction.addToBackStack(null)  // Agrega al back stack para poder navegar hacia atrás
+        transaction.commit()
     }
 
     // Para manejar el resultado del picker de imagen
