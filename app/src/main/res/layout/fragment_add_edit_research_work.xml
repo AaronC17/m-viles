@@ -25,11 +25,25 @@
             android:layout_height="wrap_content"
             android:hint="Descripción (máx 500 caracteres)" />
 
+        <!-- Subir PDF -->
         <Button
             android:id="@+id/uploadPdfButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Subir PDF" />
+            android:text="Seleccionar PDF" />
+
+        <!-- Galería de imágenes -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/imagesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Subir imágenes -->
+        <Button
+            android:id="@+id/addImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Agregar Imagen" />
 
         <EditText
             android:id="@+id/conclusionsEditText"

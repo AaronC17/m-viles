@@ -6,6 +6,6 @@ data class ResearchWork(
     val description: String = "",
     val conclusions: String = "",
     val recommendations: String = "",
-    val authorId: String = "", // UID del autor
-    val authorName: String = "Anónimo" // Nombre del autor
+    val authorId: String = "",
+    val authorName: String = "Anónimo"
 )

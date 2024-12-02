@@ -26,8 +26,12 @@ class ResearchWorkAdapter(private val researchList: List<ResearchWork>) :
         val researchWork = researchList[position]
         holder.titleTextView.text = researchWork.title
         holder.areaTextView.text = researchWork.area
-        holder.authorTextView.text = "Autor: ${researchWork.authorName ?: "Anónimo"}"
+        holder.authorTextView.text = "Autor: ${researchWork.authorName}"
+        println("DEBUG: Mostrando autor: ${researchWork.authorName}")
     }
+
+
+
 
     override fun getItemCount(): Int = researchList.size
 }
