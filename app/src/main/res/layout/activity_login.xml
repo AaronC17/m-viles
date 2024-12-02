@@ -5,12 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <EditText
-        android:id="@+id/nameEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nombre completo" />
-
+    <!-- Campo de texto para el correo electrónico -->
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
@@ -18,6 +13,7 @@
         android:hint="Correo electrónico"
         android:inputType="textEmailAddress" />
 
+    <!-- Campo de texto para la contraseña -->
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
@@ -25,21 +21,17 @@
         android:hint="Contraseña"
         android:inputType="textPassword" />
 
-    <EditText
-        android:id="@+id/gradeEditText"
+    <!-- Botón para iniciar sesión -->
+    <Button
+        android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Grado escolar" />
+        android:text="Iniciar sesión" />
 
-    <EditText
-        android:id="@+id/descriptionEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Descripción de quién soy" />
-
+    <!-- Botón para ir a la pantalla de registro -->
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrar" />
+        android:text="Crear cuenta" />
 </LinearLayout>
