@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold" />
 
-    <!-- RecyclerView para mostrar los comentarios -->
+    <!-- RecyclerView para comentarios -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/commentsRecyclerView"
         android:layout_width="match_parent"

@@ -10,27 +10,24 @@ import com.example.moviles_proyecto.databinding.ItemResearchWorkBinding
 class ResearchWorkAdapter(private val researchList: List<ResearchWork>) :
     RecyclerView.Adapter<ResearchWorkAdapter.ResearchWorkViewHolder>() {
 
+    class ResearchWorkViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
+        val areaTextView: TextView = itemView.findViewById(R.id.areaTextView)
+        val authorTextView: TextView = itemView.findViewById(R.id.authorTextView)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResearchWorkViewHolder {
-        val binding = ItemResearchWorkBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ResearchWorkViewHolder(binding)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_research_work, parent, false)
+        return ResearchWorkViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ResearchWorkViewHolder, position: Int) {
         val researchWork = researchList[position]
-        holder.bind(researchWork)
+        holder.titleTextView.text = researchWork.title
+        holder.areaTextView.text = researchWork.area
+        holder.authorTextView.text = "Autor: ${researchWork.authorName ?: "Anónimo"}"
     }
 
-    override fun getItemCount(): Int {
-        return researchList.size
-    }
-
-    class ResearchWorkViewHolder(private val binding: ItemResearchWorkBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(researchWork: ResearchWork) {
-            binding.titleTextView.text = researchWork.title
-            binding.areaTextView.text = researchWork.area
-            binding.descriptionTextView.text = researchWork.description
-        }
-    }
+    override fun getItemCount(): Int = researchList.size
 }

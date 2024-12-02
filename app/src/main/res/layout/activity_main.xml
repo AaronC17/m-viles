@@ -1,36 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Botón para ver trabajos de investigación -->
-    <Button
-        android:id="@+id/viewResearchButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ver trabajos de investigación" />
-
-    <!-- Botón para subir fotos -->
-    <Button
-        android:id="@+id/uploadPhotoButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Subir Foto" />
-
-    <!-- Botón para cerrar sesión -->
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cerrar sesión" />
-
-    <!-- Contenedor para fragmentos -->
+    <!-- Contenedor para los fragmentos -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp" />
+        android:layout_height="match_parent" />
 
-</LinearLayout>
+    <!-- Bottom Navigation para las secciones CRUD -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:menu="@menu/bottom_nav_crud" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

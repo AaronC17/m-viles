@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_work_list"
+        android:icon="@drawable/ic_list"
+        android:title="Lista de Trabajos" />
+
+    <item
+        android:id="@+id/nav_add_work"
+        android:icon="@drawable/ic_add"
+        android:title="Agregar Trabajo" />
+</menu>
