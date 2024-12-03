@@ -29,7 +29,25 @@ class ResearchWorkListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         researchList = mutableListOf()
-        adapter = ResearchWorkAdapter(researchList)
+
+        // Inicializa el adaptador con el callback de clic
+        adapter = ResearchWorkAdapter(researchList) { selectedWork ->
+            val bundle = Bundle().apply {
+                putString("title", selectedWork.title)
+                putString("area", selectedWork.area)
+                putString("description", selectedWork.description)
+                putString("conclusions", selectedWork.conclusions)
+                putString("recommendations", selectedWork.recommendations)
+                putStringArrayList("imageUrls", ArrayList(selectedWork.imageUrls))
+                putString("pdfUrl", selectedWork.pdfUrl)
+                putString("authorName", selectedWork.authorName)
+            }
+            // Navega al fragmento de detalles
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ResearchWorkDetailFragment::class.java, bundle)
+                .addToBackStack(null)
+                .commit()
+        }
         recyclerView.adapter = adapter
 
         // Cargar los trabajos desde Firestore
@@ -53,3 +71,4 @@ class ResearchWorkListFragment : Fragment() {
             }
     }
 }
+

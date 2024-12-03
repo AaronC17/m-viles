@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">moviles-proyecto</string>
+    <string-array name="areas_array">
+        <item>Todas</item>
+        <item>Matemáticas</item>
+        <item>Biología</item>
+        <item>Ciencias Sociales</item>
+    </string-array>
 </resources>

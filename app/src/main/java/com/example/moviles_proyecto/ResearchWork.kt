@@ -6,6 +6,7 @@ data class ResearchWork(
     val description: String = "",
     val conclusions: String = "",
     val recommendations: String = "",
-    val authorId: String = "",
+    val imageUrls: List<String> = listOf(),
+    val pdfUrl: String = "",
     val authorName: String = ""
 )

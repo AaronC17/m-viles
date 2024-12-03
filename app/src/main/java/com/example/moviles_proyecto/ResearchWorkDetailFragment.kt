@@ -7,16 +7,13 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviles_proyecto.databinding.FragmentResearchWorkDetailBinding
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.DocumentSnapshot
-import com.example.moviles_proyecto.Comment
-
 
 class ResearchWorkDetailFragment : Fragment() {
 
@@ -26,6 +23,15 @@ class ResearchWorkDetailFragment : Fragment() {
     private lateinit var commentEditText: EditText
     private lateinit var submitCommentButton: Button
     private var comments: MutableList<Comment> = mutableListOf()
+
+    // Views para los detalles del trabajo
+    private lateinit var titleTextView: TextView
+    private lateinit var areaTextView: TextView
+    private lateinit var descriptionTextView: TextView
+    private lateinit var conclusionsTextView: TextView
+    private lateinit var recommendationsTextView: TextView
+
+    private var workId: String? = null // ID del trabajo recibido desde los argumentos
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,9 +44,24 @@ class ResearchWorkDetailFragment : Fragment() {
         commentEditText = binding.commentEditText
         submitCommentButton = binding.submitCommentButton
 
+        // Views para los detalles del trabajo
+        titleTextView = binding.titleTextView
+        areaTextView = binding.areaTextView
+        descriptionTextView = binding.descriptionTextView
+        conclusionsTextView = binding.conclusionsTextView
+        recommendationsTextView = binding.recommendationsTextView
+
         recyclerView.layoutManager = LinearLayoutManager(context)
         commentAdapter = CommentAdapter(comments)
         recyclerView.adapter = commentAdapter
+
+        // Obtener los argumentos pasados al fragmento
+        workId = arguments?.getString("work_id")
+        titleTextView.text = arguments?.getString("title")
+        areaTextView.text = arguments?.getString("area")
+        descriptionTextView.text = arguments?.getString("description")
+        conclusionsTextView.text = arguments?.getString("conclusions")
+        recommendationsTextView.text = arguments?.getString("recommendations")
 
         // Cargar comentarios desde Firebase
         loadComments()
@@ -48,9 +69,11 @@ class ResearchWorkDetailFragment : Fragment() {
         // Configurar botón de enviar comentario
         submitCommentButton.setOnClickListener {
             val newCommentText = commentEditText.text.toString().trim()
-            if (newCommentText.isNotEmpty()) {
+            if (newCommentText.isNotEmpty() && workId != null) {
                 val newComment = Comment(user = "Anonymous", commentText = newCommentText)
                 saveCommentToFirestore(newComment)
+            } else {
+                Toast.makeText(context, "Error: no se puede enviar el comentario", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -59,9 +82,15 @@ class ResearchWorkDetailFragment : Fragment() {
 
     // Cargar comentarios desde Firestore
     private fun loadComments() {
+        if (workId == null) {
+            Toast.makeText(context, "Error: ID del trabajo no encontrado", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         firestore.collection("research_works")
-            .document("work_id") // Aquí debes colocar el ID del trabajo
+            .document(workId!!)
             .collection("comments")
+            .orderBy("timestamp", Query.Direction.ASCENDING) // Ordenar por timestamp (si está disponible)
             .get()
             .addOnSuccessListener { documents ->
                 comments.clear()
@@ -78,9 +107,13 @@ class ResearchWorkDetailFragment : Fragment() {
 
     // Guardar un nuevo comentario en Firestore
     private fun saveCommentToFirestore(comment: Comment) {
-        val workId = "work_id" // Aquí debes colocar el ID del trabajo
+        if (workId == null) {
+            Toast.makeText(context, "Error: ID del trabajo no encontrado", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         firestore.collection("research_works")
-            .document(workId)
+            .document(workId!!)
             .collection("comments")
             .add(comment)
             .addOnSuccessListener {
@@ -93,4 +126,3 @@ class ResearchWorkDetailFragment : Fragment() {
             }
     }
 }
-
