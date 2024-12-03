@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SignUpActivity : AppCompatActivity() {
@@ -39,30 +40,47 @@ class SignUpActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Crear el usuario en Firebase Authentication
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+                        val user = auth.currentUser
 
-                        val userMap = hashMapOf(
-                            "name" to name,
-                            "email" to email,
-                            "grade" to grade,
-                            "description" to description
-                        )
+                        // Actualizar el perfil del usuario para agregar el displayName
+                        val profileUpdates = UserProfileChangeRequest.Builder()
+                            .setDisplayName(name)
+                            .build()
 
-                        firestore.collection("users").document(userId).set(userMap)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
-                                finish() // Cerrar la actividad y volver al Login
+                        user?.updateProfile(profileUpdates)?.addOnCompleteListener { updateTask ->
+                            if (updateTask.isSuccessful) {
+                                // Guardar datos adicionales en Firestore
+                                saveUserToFirestore(user.uid, name, email, grade, description)
+                            } else {
+                                Toast.makeText(this, "Error al guardar el perfil del usuario", Toast.LENGTH_SHORT).show()
                             }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Error al guardar datos", Toast.LENGTH_SHORT).show()
-                            }
+                        }
                     } else {
                         Toast.makeText(this, "Error al registrar usuario", Toast.LENGTH_SHORT).show()
                     }
                 }
         }
+    }
+
+    private fun saveUserToFirestore(userId: String, name: String, email: String, grade: String, description: String) {
+        val userMap = hashMapOf(
+            "name" to name,
+            "email" to email,
+            "grade" to grade,
+            "description" to description
+        )
+
+        firestore.collection("users").document(userId).set(userMap)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Registro exitoso y datos guardados", Toast.LENGTH_SHORT).show()
+                finish() // Cerrar la actividad y volver al Login
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "Error al guardar datos en Firestore: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

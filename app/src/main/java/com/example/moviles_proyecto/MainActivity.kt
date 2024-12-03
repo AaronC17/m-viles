@@ -2,6 +2,7 @@ package com.example.moviles_proyecto
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -38,6 +39,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     true
                 }
+                R.id.nav_logout -> {
+                    logout() // Llamar a la función de cerrar sesión
+                    true
+                }
                 else -> false
             }
         }
@@ -51,6 +56,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun redirectToLogin() {
         val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK // Limpiar historial
         startActivity(intent)
+        finish() // Cerrar la actividad actual
+    }
+
+    private fun logout() {
+        auth.signOut() // Cerrar la sesión en Firebase
+        Toast.makeText(this, "Sesión cerrada exitosamente", Toast.LENGTH_SHORT).show()
+        redirectToLogin() // Redirigir al LoginActivity
     }
 }

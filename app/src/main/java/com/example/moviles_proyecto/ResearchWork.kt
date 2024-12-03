@@ -7,5 +7,5 @@ data class ResearchWork(
     val conclusions: String = "",
     val recommendations: String = "",
     val authorId: String = "",
-    val authorName: String = "Anónimo"
+    val authorName: String = ""
 )

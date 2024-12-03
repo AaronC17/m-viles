@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import java.util.*
 
 class AddEditResearchWorkFragment : Fragment() {
 
@@ -75,7 +74,7 @@ class AddEditResearchWorkFragment : Fragment() {
         // Guardar trabajo
         saveWorkButton.setOnClickListener {
             if (validateInputs()) {
-                saveResearchWork()
+                reloadUserAndSaveWork()
             }
         }
 
@@ -130,38 +129,58 @@ class AddEditResearchWorkFragment : Fragment() {
         return true
     }
 
-    private fun saveResearchWork() {
+    private fun reloadUserAndSaveWork() {
+        val currentUser = auth.currentUser
+        currentUser?.reload()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val authorName = currentUser.displayName ?: "Anónimo"
+                uploadImagesToStorage { imageUrls ->
+                    saveResearchWork(authorName, imageUrls)
+                }
+            } else {
+                Toast.makeText(context, "Error al recargar los datos del usuario", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun uploadImagesToStorage(onComplete: (List<String>) -> Unit) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            Toast.makeText(context, "Debes iniciar sesión para subir imágenes", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val imageUrls = mutableListOf<String>()
+        val storageRef = FirebaseStorage.getInstance().reference
+        var uploadedCount = 0
+
+        for ((index, uri) in imageUris.withIndex()) {
+            val imageRef = storageRef.child("research_images/${currentUser.uid}/${System.currentTimeMillis()}_${index}.jpg")
+            imageRef.putFile(uri)
+                .addOnSuccessListener {
+                    imageRef.downloadUrl.addOnSuccessListener { url ->
+                        imageUrls.add(url.toString())
+                        uploadedCount++
+                        if (uploadedCount == imageUris.size) {
+                            onComplete(imageUrls)
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(context, "Error al subir imagen: ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+
+    private fun saveResearchWork(authorName: String, imageUrls: List<String>) {
         val title = titleEditText.text.toString().trim()
         val area = areaSpinner.selectedItem.toString()
         val description = descriptionEditText.text.toString().trim()
         val conclusions = conclusionsEditText.text.toString().trim()
         val recommendations = recommendationsEditText.text.toString().trim()
 
-        if (title.isEmpty() || description.isEmpty() || conclusions.isEmpty() || recommendations.isEmpty()) {
-            Toast.makeText(context, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (pdfUri == null) {
-            Toast.makeText(context, "Por favor, selecciona un PDF", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (imageUris.size < 3 || imageUris.size > 6) {
-            Toast.makeText(context, "Por favor, selecciona entre 3 y 6 imágenes", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         val currentUser = auth.currentUser
-        if (currentUser != null) {
-            val authorName = currentUser.displayName ?: "Anónimo"
-            println("DEBUG: Usuario autenticado - UID: ${currentUser.uid}, Nombre: $authorName")
-        } else {
-            println("DEBUG: No hay usuario autenticado")
-        }
-
-
-        val authorName = currentUser?.displayName ?: "Anónimo"
         val researchWork = hashMapOf(
             "title" to title,
             "area" to area,
@@ -169,22 +188,17 @@ class AddEditResearchWorkFragment : Fragment() {
             "conclusions" to conclusions,
             "recommendations" to recommendations,
             "authorId" to currentUser?.uid,
-            "authorName" to authorName
+            "authorName" to authorName,
+            "imageUrls" to imageUrls
         )
 
-        println("DEBUG: Datos a guardar - $researchWork")
         firestore.collection("research_works")
             .add(researchWork)
             .addOnSuccessListener {
-                println("DEBUG: Trabajo guardado exitosamente - Autor: $authorName")
+                Toast.makeText(context, "Trabajo guardado exitosamente", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { exception ->
-                println("DEBUG: Error al guardar: ${exception.message}")
+                Toast.makeText(context, "Error al guardar el trabajo", Toast.LENGTH_SHORT).show()
             }
-
-
-
-
     }
-
 }
