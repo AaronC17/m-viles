@@ -6,12 +6,13 @@
     android:padding="16dp">
 
     <!-- Spinner para seleccionar el área de investigación -->
+
+    <!-- Spinner para seleccionar el grado académico -->
     <Spinner
         android:id="@+id/areaSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <!-- Spinner para seleccionar el grado académico -->
     <Spinner
         android:id="@+id/gradeSpinner"
         android:layout_width="match_parent"
