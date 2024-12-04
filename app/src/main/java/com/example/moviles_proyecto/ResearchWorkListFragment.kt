@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +20,7 @@ class ResearchWorkListFragment : Fragment() {
     private lateinit var researchList: MutableList<ResearchWork>
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ResearchWorkAdapter
+    private lateinit var gradeSpinner: Spinner
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,10 +29,10 @@ class ResearchWorkListFragment : Fragment() {
         val binding = FragmentResearchWorkListBinding.inflate(inflater, container, false)
 
         firestore = FirebaseFirestore.getInstance()
+        researchList = mutableListOf()
+
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-
-        researchList = mutableListOf()
 
         // Inicializa el adaptador con el callback de clic
         adapter = ResearchWorkAdapter(researchList) { selectedWork ->
@@ -50,15 +54,36 @@ class ResearchWorkListFragment : Fragment() {
         }
         recyclerView.adapter = adapter
 
-        // Cargar los trabajos desde Firestore
-        loadResearchWorks()
+        // Configura el Spinner para el filtro de grado escolar
+        gradeSpinner = binding.gradeSpinner
+        val gradeOptions = listOf("Todos", "Primaria", "Secundaria", "Preparatoria", "Universidad")
+        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, gradeOptions)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        gradeSpinner.adapter = spinnerAdapter
+
+        gradeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedGrade = gradeOptions[position]
+                loadResearchWorks(if (selectedGrade == "Todos") null else selectedGrade)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        // Cargar todos los trabajos inicialmente
+        loadResearchWorks(null)
 
         return binding.root
     }
 
-    private fun loadResearchWorks() {
-        firestore.collection("research_works")
-            .get()
+    private fun loadResearchWorks(grade: String?) {
+        val query = if (grade != null) {
+            firestore.collection("research_works").whereEqualTo("authorGrade", grade)
+        } else {
+            firestore.collection("research_works")
+        }
+
+        query.get()
             .addOnSuccessListener { documents ->
                 researchList.clear()
                 for (document in documents) {
@@ -72,5 +97,4 @@ class ResearchWorkListFragment : Fragment() {
                 Toast.makeText(context, "Error al cargar los trabajos: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 }

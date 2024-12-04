@@ -1,27 +1,21 @@
-<!-- res/layout/fragment_research_work_list.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <!-- Spinner para seleccionar el área de investigación -->
-
-    <!-- Spinner para seleccionar el grado académico -->
-    <Spinner
-        android:id="@+id/areaSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+    <!-- Spinner para seleccionar el grado escolar -->
     <Spinner
         android:id="@+id/gradeSpinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp" />
 
-    <!-- RecyclerView para mostrar la lista de trabajos -->
+    <!-- RecyclerView para mostrar los trabajos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="8dp" />
 
 </LinearLayout>

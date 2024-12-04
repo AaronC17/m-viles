@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class ResearchWorkAdapter(
-    private val researchWorks: List<ResearchWork>,
+    private var researchWorks: List<ResearchWork>, // Cambiado a 'var' para permitir actualizaciones
     private val onItemClicked: (ResearchWork) -> Unit
 ) : RecyclerView.Adapter<ResearchWorkAdapter.ResearchWorkViewHolder>() {
 
@@ -34,7 +34,14 @@ class ResearchWorkAdapter(
     }
 
     override fun getItemCount(): Int = researchWorks.size
+
+    // Método para actualizar los datos
+    fun updateData(newResearchWorks: List<ResearchWork>) {
+        researchWorks = newResearchWorks
+        notifyDataSetChanged() // Notifica a RecyclerView que los datos han cambiado
+    }
 }
+
 
 
 

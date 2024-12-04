@@ -81,6 +81,92 @@ class AddEditResearchWorkFragment : Fragment() {
         return view
     }
 
+    private fun reloadUserAndSaveWork() {
+        val currentUser = auth.currentUser
+        currentUser?.reload()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val authorName = currentUser.displayName ?: "Anónimo"
+                uploadPdfToStorage { pdfUrl ->
+                    if (pdfUrl != null) {
+                        uploadImagesToStorage { imageUrls ->
+                            fetchUserGrade { grade ->
+                                saveResearchWork(authorName, grade, imageUrls, pdfUrl)
+                            }
+                        }
+                    } else {
+                        Toast.makeText(context, "No se pudo subir el PDF", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+                Toast.makeText(context, "Error al recargar los datos del usuario", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun fetchUserGrade(onComplete: (String) -> Unit) {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            firestore.collection("users").document(currentUser.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val grade = document.getString("grade") ?: "Desconocido"
+                        onComplete(grade)
+                    } else {
+                        onComplete("Desconocido")
+                    }
+                }
+                .addOnFailureListener {
+                    onComplete("Desconocido")
+                }
+        } else {
+            onComplete("Desconocido")
+        }
+    }
+
+    private fun saveResearchWork(authorName: String, authorGrade: String, imageUrls: List<String>, pdfUrl: String) {
+        val title = titleEditText.text.toString().trim()
+        val area = areaSpinner.selectedItem.toString()
+        val description = descriptionEditText.text.toString().trim()
+        val conclusions = conclusionsEditText.text.toString().trim()
+        val recommendations = recommendationsEditText.text.toString().trim()
+
+        val currentUser = auth.currentUser
+        val researchWork = hashMapOf(
+            "title" to title,
+            "area" to area,
+            "description" to description,
+            "conclusions" to conclusions,
+            "recommendations" to recommendations,
+            "authorId" to currentUser?.uid,
+            "authorName" to authorName,
+            "authorGrade" to authorGrade, // Guardar el grado escolar del autor
+            "imageUrls" to imageUrls,
+            "pdfUrl" to pdfUrl
+        )
+
+        firestore.collection("research_works")
+            .add(researchWork)
+            .addOnSuccessListener {
+                Toast.makeText(context, "Trabajo guardado exitosamente", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(context, "Error al guardar el trabajo: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun validateInputs(): Boolean {
+        if (pdfUri == null) {
+            Toast.makeText(context, "Por favor, selecciona un PDF", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (imageUris.size < 3 || imageUris.size > 6) {
+            Toast.makeText(context, "Por favor, selecciona entre 3 y 6 imágenes", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
+    }
+
     private fun selectPdf() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "application/pdf"
@@ -117,18 +203,6 @@ class AddEditResearchWorkFragment : Fragment() {
             }
         }
 
-    private fun validateInputs(): Boolean {
-        if (pdfUri == null) {
-            Toast.makeText(context, "Por favor, selecciona un PDF", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (imageUris.size < 3 || imageUris.size > 6) {
-            Toast.makeText(context, "Por favor, selecciona entre 3 y 6 imágenes", Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
-    }
-
     private fun uploadPdfToStorage(onComplete: (String?) -> Unit) {
         val currentUser = auth.currentUser
         if (currentUser == null || pdfUri == null) {
@@ -149,26 +223,6 @@ class AddEditResearchWorkFragment : Fragment() {
                 Toast.makeText(context, "Error al subir PDF: ${exception.message}", Toast.LENGTH_SHORT).show()
                 onComplete(null)
             }
-    }
-
-    private fun reloadUserAndSaveWork() {
-        val currentUser = auth.currentUser
-        currentUser?.reload()?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val authorName = currentUser.displayName ?: "Anónimo"
-                uploadPdfToStorage { pdfUrl ->
-                    if (pdfUrl != null) {
-                        uploadImagesToStorage { imageUrls ->
-                            saveResearchWork(authorName, imageUrls, pdfUrl)
-                        }
-                    } else {
-                        Toast.makeText(context, "No se pudo subir el PDF", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } else {
-                Toast.makeText(context, "Error al recargar los datos del usuario", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun uploadImagesToStorage(onComplete: (List<String>) -> Unit) {
@@ -199,35 +253,4 @@ class AddEditResearchWorkFragment : Fragment() {
                 }
         }
     }
-
-    private fun saveResearchWork(authorName: String, imageUrls: List<String>, pdfUrl: String) {
-        val title = titleEditText.text.toString().trim()
-        val area = areaSpinner.selectedItem.toString()
-        val description = descriptionEditText.text.toString().trim()
-        val conclusions = conclusionsEditText.text.toString().trim()
-        val recommendations = recommendationsEditText.text.toString().trim()
-
-        val currentUser = auth.currentUser
-        val researchWork = hashMapOf(
-            "title" to title,
-            "area" to area,
-            "description" to description,
-            "conclusions" to conclusions,
-            "recommendations" to recommendations,
-            "authorId" to currentUser?.uid,
-            "authorName" to authorName,
-            "imageUrls" to imageUrls,
-            "pdfUrl" to pdfUrl // Guardar la URL del PDF
-        )
-
-        firestore.collection("research_works")
-            .add(researchWork)
-            .addOnSuccessListener {
-                Toast.makeText(context, "Trabajo guardado exitosamente", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { exception ->
-                Toast.makeText(context, "Error al guardar el trabajo: ${exception.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
 }

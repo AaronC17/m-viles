@@ -36,12 +36,14 @@ class SignUpActivity : AppCompatActivity() {
         val nameEditText = findViewById<EditText>(R.id.nameEditText)
         val emailEditText = findViewById<EditText>(R.id.emailEditText)
         val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
-        val gradeEditText = findViewById<EditText>(R.id.gradeEditText)
+        val gradeSpinner = findViewById<Spinner>(R.id.gradeSpinner)
         val descriptionEditText = findViewById<EditText>(R.id.descriptionEditText)
         val uploadImageButton = findViewById<Button>(R.id.uploadImageButton)
         val profileImageView = findViewById<ImageView>(R.id.profileImageView)
         val registerButton = findViewById<Button>(R.id.registerButton)
         val googleSignUpButton = findViewById<Button>(R.id.googleSignUpButton)
+
+        setupGradeSpinner(gradeSpinner)
 
         // Configuración de Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -50,26 +52,22 @@ class SignUpActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        googleSignUpButton.setOnClickListener {
-            signInWithGoogle()
-        }
-
-        uploadImageButton.setOnClickListener {
-            selectImage()
-        }
+        googleSignUpButton.setOnClickListener { signInWithGoogle() }
+        uploadImageButton.setOnClickListener { selectImage() }
 
         registerButton.setOnClickListener {
             val name = nameEditText.text.toString().trim()
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
-            val grade = gradeEditText.text.toString().trim()
+            val grade = gradeSpinner.selectedItem.toString()
             val description = descriptionEditText.text.toString().trim()
 
-            if (name.isEmpty() || email.isEmpty() || password.isEmpty() || grade.isEmpty() || description.isEmpty()) {
+            if (name.isEmpty() || email.isEmpty() || password.isEmpty() || grade == "Seleccione grado escolar" || description.isEmpty()) {
                 Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // Validar imagen
             if (selectedImageUri == null) {
                 Toast.makeText(this, "Por favor, selecciona una imagen de perfil", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -79,29 +77,34 @@ class SignUpActivity : AppCompatActivity() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val user = auth.currentUser
-                        if (user != null) {
-                            uploadProfileImage(user.uid) { imageUrl ->
+                        user?.let {
+                            uploadProfileImage(it.uid) { imageUrl ->
                                 val profileUpdates = UserProfileChangeRequest.Builder()
                                     .setDisplayName(name)
                                     .setPhotoUri(Uri.parse(imageUrl))
                                     .build()
 
-                                user.updateProfile(profileUpdates).addOnCompleteListener { updateTask ->
+                                it.updateProfile(profileUpdates).addOnCompleteListener { updateTask ->
                                     if (updateTask.isSuccessful) {
-                                        saveUserToFirestore(user.uid, name, email, grade, description, imageUrl)
+                                        saveUserToFirestore(it.uid, name, email, grade, description, imageUrl)
                                     } else {
                                         Toast.makeText(this, "Error al actualizar perfil", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             }
-                        } else {
-                            Toast.makeText(this, "Error al obtener usuario", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         Toast.makeText(this, "Error al registrar usuario: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
         }
+    }
+
+    private fun setupGradeSpinner(gradeSpinner: Spinner) {
+        val grades = listOf("Seleccione grado escolar", "Primaria", "Secundaria", "Preparatoria", "Universidad")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, grades)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        gradeSpinner.adapter = adapter
     }
 
     private fun selectImage() {
@@ -115,7 +118,6 @@ class SignUpActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 selectedImageUri = result.data?.data
                 findViewById<ImageView>(R.id.profileImageView).setImageURI(selectedImageUri)
-                Toast.makeText(this, "Imagen seleccionada", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -143,7 +145,14 @@ class SignUpActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
-                    saveUserToFirestore(user?.uid ?: "", user?.displayName ?: "Anónimo", user?.email ?: "", "", "", user?.photoUrl.toString())
+                    saveUserToFirestore(
+                        user?.uid ?: "",
+                        user?.displayName ?: "Anónimo",
+                        user?.email ?: "",
+                        "",
+                        "",
+                        user?.photoUrl.toString()
+                    )
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 } else {
@@ -157,9 +166,7 @@ class SignUpActivity : AppCompatActivity() {
         selectedImageUri?.let { uri ->
             storageRef.putFile(uri)
                 .addOnSuccessListener {
-                    storageRef.downloadUrl.addOnSuccessListener { url ->
-                        onComplete(url.toString())
-                    }
+                    storageRef.downloadUrl.addOnSuccessListener { url -> onComplete(url.toString()) }
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(this, "Error al subir imagen: ${exception.message}", Toast.LENGTH_SHORT).show()

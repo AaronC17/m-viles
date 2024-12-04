@@ -1,66 +1,102 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F9F9F9">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@drawable/card_background"
+        android:divider="@android:drawable/divider_horizontal_bright"
+        android:showDividers="middle">
 
         <EditText
             android:id="@+id/titleEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Título de la Investigación" />
+            android:hint="Título de la Investigación"
+            android:backgroundTint="#3A3A3A"
+            android:textColorHint="#757575"
+            android:padding="12dp"
+            android:background="@drawable/input_background" />
 
         <Spinner
             android:id="@+id/areaSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:backgroundTint="#3A3A3A" />
 
         <EditText
             android:id="@+id/descriptionEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descripción (máx 500 caracteres)" />
+            android:hint="Descripción (máx 500 caracteres)"
+            android:backgroundTint="#3A3A3A"
+            android:textColorHint="#757575"
+            android:padding="12dp"
+            android:background="@drawable/input_background"
+            android:gravity="start|top"
+            android:minHeight="120dp" />
 
-        <!-- Subir PDF -->
         <Button
             android:id="@+id/uploadPdfButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Seleccionar PDF" />
+            android:text="Seleccionar PDF"
+            android:background="@drawable/button_background"
+            android:textColor="#FFFFFF"
+            android:padding="12dp" />
 
-        <!-- Galería de imágenes -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imagesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp" />
 
-        <!-- Subir imágenes -->
         <Button
             android:id="@+id/addImageButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Agregar Imagen" />
+            android:text="Agregar Imagen"
+            android:background="@drawable/button_background"
+            android:textColor="#FFFFFF"
+            android:padding="12dp" />
 
         <EditText
             android:id="@+id/conclusionsEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Conclusiones (máx 500 caracteres)" />
+            android:hint="Conclusiones (máx 500 caracteres)"
+            android:backgroundTint="#3A3A3A"
+            android:textColorHint="#757575"
+            android:padding="12dp"
+            android:background="@drawable/input_background"
+            android:gravity="start|top"
+            android:minHeight="120dp" />
 
         <EditText
             android:id="@+id/recommendationsEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Recomendaciones (máx 500 caracteres)" />
+            android:hint="Recomendaciones (máx 500 caracteres)"
+            android:backgroundTint="#3A3A3A"
+            android:textColorHint="#757575"
+            android:padding="12dp"
+            android:background="@drawable/input_background"
+            android:gravity="start|top"
+            android:minHeight="120dp" />
 
         <Button
             android:id="@+id/saveWorkButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Guardar" />
+            android:text="Guardar"
+            android:background="@drawable/button_primary"
+            android:textColor="#FFFFFF"
+            android:padding="16dp"
+            android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 </ScrollView>
