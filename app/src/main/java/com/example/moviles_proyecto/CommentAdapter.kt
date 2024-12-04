@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import android.util.Log
 
 class CommentAdapter(private var comments: MutableList<Comment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
+    // ViewHolder para los comentarios
     inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val userTextView: TextView = itemView.findViewById(R.id.userTextView)
         val commentTextView: TextView = itemView.findViewById(R.id.commentTextView)
@@ -29,17 +29,12 @@ class CommentAdapter(private var comments: MutableList<Comment>) :
         // Asignar valores del comentario al ViewHolder
         holder.userTextView.text = comment.user
         holder.commentTextView.text = comment.commentText
-        holder.commentRatingBar.rating = comment.rating.toFloat() // Asegúrate de que sea el valor correcto
+        holder.commentRatingBar.rating = comment.rating.toFloat()
     }
-
-
-
-
-
-
 
     override fun getItemCount(): Int = comments.size
 
+    // Actualizar los comentarios del adaptador
     fun updateComments(newComments: List<Comment>) {
         comments.clear()
         comments.addAll(newComments)

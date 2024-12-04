@@ -1,14 +1,14 @@
 package com.example.moviles_proyecto
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.moviles_proyecto.databinding.ItemImageBinding
 
-class ImageAdapter(private val imageUris: List<Uri>) :
+class ImageAdapter(private val imageUrls: List<String>) :
     RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -22,9 +22,11 @@ class ImageAdapter(private val imageUris: List<Uri>) :
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val uri = imageUris[position]
-        holder.imageView.setImageURI(uri)
+        val url = imageUrls[position]
+        Glide.with(holder.itemView.context)
+            .load(url) // Carga la imagen desde la URL usando Glide
+            .into(holder.imageView)
     }
 
-    override fun getItemCount(): Int = imageUris.size
+    override fun getItemCount(): Int = imageUrls.size
 }

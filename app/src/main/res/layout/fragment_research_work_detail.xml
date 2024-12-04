@@ -27,6 +27,29 @@
         android:layout_height="wrap_content"
         android:text="Descripción" />
 
+    <!-- Ver PDF -->
+    <Button
+        android:id="@+id/viewPdfButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ver PDF"
+        android:layout_marginTop="16dp" />
+
+    <!-- Imágenes adjuntas -->
+    <TextView
+        android:id="@+id/imagesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Imágenes Adjuntas"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/imagesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp" />
+
     <!-- Conclusiones -->
     <TextView
         android:id="@+id/conclusionsTextView"
@@ -50,16 +73,13 @@
         android:textStyle="bold"
         android:layout_marginTop="16dp" />
 
-    <!-- Lista de comentarios -->
-
-    <!-- Editar comentario -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/commentsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="427dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1" />
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp" />
 
+    <!-- Editar comentario -->
     <EditText
         android:id="@+id/commentEditText"
         android:layout_width="match_parent"
@@ -82,7 +102,6 @@
         android:id="@+id/submitCommentButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="120dp"
-        android:text="Enviar Comentario"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:text="Enviar Comentario" />
 </LinearLayout>

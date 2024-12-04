@@ -44,6 +44,7 @@ class AddEditResearchWorkFragment : Fragment() {
         storage = FirebaseStorage.getInstance()
         auth = FirebaseAuth.getInstance()
 
+        // Vincular vistas
         titleEditText = view.findViewById(R.id.titleEditText)
         areaSpinner = view.findViewById(R.id.areaSpinner)
         descriptionEditText = view.findViewById(R.id.descriptionEditText)
@@ -54,24 +55,26 @@ class AddEditResearchWorkFragment : Fragment() {
         addImageButton = view.findViewById(R.id.addImageButton)
         imagesRecyclerView = view.findViewById(R.id.imagesRecyclerView)
 
-        // Configurar Spinner para las áreas de investigación
-        val areas = listOf("Matemáticas", "Biología", "Ciencias Sociales")
+        // Configurar el Spinner de áreas de investigación
+        val areas = listOf("Matemáticas", "Biología", "Ciencias Sociales", "Ingeniería", "Arte")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, areas)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         areaSpinner.adapter = adapter
 
-        // Configurar RecyclerView para imágenes
+        // Configurar RecyclerView para mostrar imágenes seleccionadas
         imagesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        val imageAdapter = ImageAdapter(imageUris)
+        // Usa el UriImageAdapter aquí
+        val imageAdapter = UriImageAdapter(imageUris)
         imagesRecyclerView.adapter = imageAdapter
 
-        // Selección de PDF
+
+        // Botón para seleccionar PDF
         uploadPdfButton.setOnClickListener { selectPdf() }
 
-        // Agregar imagen
-        addImageButton.setOnClickListener { selectImage() }
+        // Botón para seleccionar imágenes
+        addImageButton.setOnClickListener { selectImages() }
 
-        // Guardar trabajo
+        // Botón para guardar el trabajo
         saveWorkButton.setOnClickListener {
             if (validateInputs()) {
                 reloadUserAndSaveWork()
@@ -140,7 +143,7 @@ class AddEditResearchWorkFragment : Fragment() {
             "recommendations" to recommendations,
             "authorId" to currentUser?.uid,
             "authorName" to authorName,
-            "authorGrade" to authorGrade, // Guardar el grado escolar del autor
+            "authorGrade" to authorGrade,
             "imageUrls" to imageUrls,
             "pdfUrl" to pdfUrl
         )
@@ -157,11 +160,11 @@ class AddEditResearchWorkFragment : Fragment() {
 
     private fun validateInputs(): Boolean {
         if (pdfUri == null) {
-            Toast.makeText(context, "Por favor, selecciona un PDF", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Selecciona un PDF", Toast.LENGTH_SHORT).show()
             return false
         }
         if (imageUris.size < 3 || imageUris.size > 6) {
-            Toast.makeText(context, "Por favor, selecciona entre 3 y 6 imágenes", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Selecciona entre 3 y 6 imágenes", Toast.LENGTH_SHORT).show()
             return false
         }
         return true
@@ -173,7 +176,7 @@ class AddEditResearchWorkFragment : Fragment() {
         pdfPickerLauncher.launch(intent)
     }
 
-    private fun selectImage() {
+    private fun selectImages() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
@@ -211,16 +214,14 @@ class AddEditResearchWorkFragment : Fragment() {
             return
         }
 
-        val storageRef = storage.reference
-        val pdfRef = storageRef.child("research_pdfs/${currentUser.uid}/${System.currentTimeMillis()}.pdf")
+        val pdfRef = storage.reference.child("research_pdfs/${currentUser.uid}/${System.currentTimeMillis()}.pdf")
         pdfRef.putFile(pdfUri!!)
             .addOnSuccessListener {
                 pdfRef.downloadUrl.addOnSuccessListener { url ->
                     onComplete(url.toString())
                 }
             }
-            .addOnFailureListener { exception ->
-                Toast.makeText(context, "Error al subir PDF: ${exception.message}", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener {
                 onComplete(null)
             }
     }
@@ -233,11 +234,10 @@ class AddEditResearchWorkFragment : Fragment() {
         }
 
         val imageUrls = mutableListOf<String>()
-        val storageRef = FirebaseStorage.getInstance().reference
         var uploadedCount = 0
 
         for ((index, uri) in imageUris.withIndex()) {
-            val imageRef = storageRef.child("research_images/${currentUser.uid}/${System.currentTimeMillis()}_${index}.jpg")
+            val imageRef = storage.reference.child("research_images/${currentUser.uid}/${System.currentTimeMillis()}_${index}.jpg")
             imageRef.putFile(uri)
                 .addOnSuccessListener {
                     imageRef.downloadUrl.addOnSuccessListener { url ->
@@ -248,8 +248,8 @@ class AddEditResearchWorkFragment : Fragment() {
                         }
                     }
                 }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(context, "Error al subir imagen: ${exception.message}", Toast.LENGTH_SHORT).show()
+                .addOnFailureListener {
+                    Toast.makeText(context, "Error al subir una imagen", Toast.LENGTH_SHORT).show()
                 }
         }
     }

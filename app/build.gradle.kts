@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.android.application) // Alias para el plugin Android Application
-    alias(libs.plugins.kotlin.android) // Alias para el plugin Kotlin Android
-    id("com.google.gms.google-services") // Plugin para Google Services (Firebase)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -37,7 +37,6 @@ android {
         jvmTarget = "1.8"
     }
 
-    // Habilitar ViewBinding
     viewBinding {
         enable = true
     }
@@ -45,24 +44,26 @@ android {
 
 dependencies {
     // Core AndroidX libraries
-    implementation("androidx.core:core-ktx:1.15.0") // Última versión de Android Core KTX
+    implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.recyclerview:recyclerview:1.3.1") // Última versión de RecyclerView
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
 
-    // Firebase BoM (Gestiona las versiones de las bibliotecas Firebase)
+    // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
-
-    // Firebase servicios
     implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth") // Firebase Auth
-    implementation("com.google.firebase:firebase-firestore") // Firestore
-    implementation("com.google.firebase:firebase-storage") // Firebase Storage
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
 
     // Google Sign-In
-    implementation("com.google.android.gms:play-services-auth:20.7.0") // Google Sign-In Library
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    // Glide para manejo de imágenes
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     // Testing libraries
     testImplementation("junit:junit:4.13.2")
