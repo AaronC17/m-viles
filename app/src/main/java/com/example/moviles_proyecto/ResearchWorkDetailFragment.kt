@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moviles_proyecto.databinding.FragmentResearchWorkDetailBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ResearchWorkDetailFragment : Fragment() {
@@ -110,8 +111,11 @@ class ResearchWorkDetailFragment : Fragment() {
             return
         }
 
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val userName = currentUser?.displayName ?: "Anónimo"
+
         val commentData = hashMapOf(
-            "user" to "Anónimo", // Cambia esto si tienes usuarios registrados
+            "user" to userName,
             "comment" to comment,
             "rating" to rating,
             "timestamp" to System.currentTimeMillis()
@@ -131,6 +135,7 @@ class ResearchWorkDetailFragment : Fragment() {
                 Toast.makeText(context, "Error al agregar el comentario: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 
     private fun loadComments() {
         if (workId.isNullOrEmpty()) {
