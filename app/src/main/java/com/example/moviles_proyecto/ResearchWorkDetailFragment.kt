@@ -1,6 +1,5 @@
 package com.example.moviles_proyecto
 
-import Comment
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Button
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +25,7 @@ class ResearchWorkDetailFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var commentEditText: EditText
     private lateinit var submitCommentButton: Button
+    private lateinit var formRatingBar: RatingBar // Asegúrate de que sea el RatingBar del formulario
     private var comments: MutableList<Comment> = mutableListOf()
 
     // Views para los detalles del trabajo
@@ -46,6 +47,7 @@ class ResearchWorkDetailFragment : Fragment() {
         recyclerView = binding.commentsRecyclerView
         commentEditText = binding.commentEditText
         submitCommentButton = binding.submitCommentButton
+        formRatingBar = binding.commentRatingBar // Vincula el RatingBar desde el layout del formulario
 
         // Views para los detalles del trabajo
         titleTextView = binding.titleTextView
@@ -78,14 +80,23 @@ class ResearchWorkDetailFragment : Fragment() {
         // Configurar botón de enviar comentario
         submitCommentButton.setOnClickListener {
             val newCommentText = commentEditText.text.toString().trim()
-            if (newCommentText.isNotEmpty() && workId != null) {
+            val rating = formRatingBar.rating.toInt()
+
+            if (newCommentText.isNotEmpty() && rating in 1..5 && workId != null) {
                 val user = FirebaseAuth.getInstance().currentUser
                 val newComment = Comment(
                     user = user?.displayName ?: "Visitante",
                     commentText = newCommentText,
+                    rating = rating,
                     timestamp = System.currentTimeMillis()
                 )
                 saveCommentToFirestore(newComment)
+            } else {
+                Toast.makeText(
+                    context,
+                    "Por favor escribe un comentario y selecciona una calificación válida.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -104,17 +115,21 @@ class ResearchWorkDetailFragment : Fragment() {
                 comments.clear()
                 for (document in documents) {
                     val comment = document.toObject(Comment::class.java)
+                    Log.d("ResearchWorkDetail", "Comentario cargado: ${comment.commentText}, Rating: ${comment.rating}")
                     comments.add(comment)
                 }
                 commentAdapter.notifyDataSetChanged()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(context, "Error al cargar los comentarios", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error al cargar los comentarios: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun saveCommentToFirestore(comment: Comment) {
-        if (workId == null) return
+        if (workId == null) {
+            Toast.makeText(context, "Error: ID del trabajo no encontrado", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         firestore.collection("research_works")
             .document(workId!!)
@@ -124,10 +139,13 @@ class ResearchWorkDetailFragment : Fragment() {
                 comments.add(comment)
                 commentAdapter.notifyItemInserted(comments.size - 1)
                 commentEditText.text.clear()
-                Toast.makeText(context, "Comentario enviado", Toast.LENGTH_SHORT).show()
+                formRatingBar.rating = 0f // Reiniciar el RatingBar del formulario
+                Toast.makeText(context, "Comentario enviado correctamente", Toast.LENGTH_SHORT).show()
+                Log.d("SaveComment", "Comentario guardado: $comment")
             }
             .addOnFailureListener { e ->
-                Toast.makeText(context, "Error al enviar el comentario", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error al enviar el comentario: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e("SaveComment", "Error al guardar comentario", e)
             }
     }
 }

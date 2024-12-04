@@ -1,19 +1,20 @@
-// CommentAdapter.kt
 package com.example.moviles_proyecto
 
-import Comment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import android.util.Log
 
 class CommentAdapter(private var comments: MutableList<Comment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
-    class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val userTextView: TextView = itemView.findViewById(R.id.userTextView)
         val commentTextView: TextView = itemView.findViewById(R.id.commentTextView)
+        val commentRatingBar: RatingBar = itemView.findViewById(R.id.commentRatingBar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -24,9 +25,18 @@ class CommentAdapter(private var comments: MutableList<Comment>) :
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val comment = comments[position]
+
+        // Asignar valores del comentario al ViewHolder
         holder.userTextView.text = comment.user
         holder.commentTextView.text = comment.commentText
+        holder.commentRatingBar.rating = comment.rating.toFloat() // Asegúrate de que sea el valor correcto
     }
+
+
+
+
+
+
 
     override fun getItemCount(): Int = comments.size
 
