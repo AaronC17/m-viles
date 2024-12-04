@@ -1,9 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Movilesproyecto" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorControlActivated">@color/rating_star_active</item> <!-- Color amarillo -->
+        <item name="colorControlNormal">@color/black</item> <!-- Color gris -->
     </style>
 
+
     <style name="Theme.Movilesproyecto" parent="Base.Theme.Movilesproyecto" />
+
+    <!-- Colores para el RatingBar -->
+    <color name="rating_star_active">#FFD700</color> <!-- Amarillo -->
+    <color name="rating_star_inactive">#FFFFFF</color> <!-- Gris -->
+
+    <!-- Estilo para el RatingBar -->
+    <style name="CustomRatingBar" parent="Widget.AppCompat.RatingBar">
+        <item name="colorControlNormal">@color/rating_star_inactive</item> <!-- Color de estrellas vacías -->
+        <item name="colorControlActivated">@color/rating_star_active</item> <!-- Color de estrellas seleccionadas -->
+        <item name="colorControlHighlight">@color/rating_star_active</item> <!-- Resalta el color activado -->
+    </style>
+
 </resources>
