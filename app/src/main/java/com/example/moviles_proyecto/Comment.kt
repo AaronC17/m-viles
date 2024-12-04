@@ -1,7 +1,5 @@
-package com.example.moviles_proyecto
-
 data class Comment(
-    val user: String = "",
-    val commentText: String = "",
-    val timestamp: Long = 0
+    val user: String = "", // Nombre del usuario
+    val commentText: String = "", // Texto del comentario
+    val timestamp: Long = System.currentTimeMillis() // Marca de tiempo para ordenar
 )

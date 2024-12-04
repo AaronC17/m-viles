@@ -33,6 +33,7 @@ class ResearchWorkListFragment : Fragment() {
         // Inicializa el adaptador con el callback de clic
         adapter = ResearchWorkAdapter(researchList) { selectedWork ->
             val bundle = Bundle().apply {
+                putString("work_id", selectedWork.id) // Pasa el ID del trabajo
                 putString("title", selectedWork.title)
                 putString("area", selectedWork.area)
                 putString("description", selectedWork.description)
@@ -42,7 +43,6 @@ class ResearchWorkListFragment : Fragment() {
                 putString("pdfUrl", selectedWork.pdfUrl)
                 putString("authorName", selectedWork.authorName)
             }
-            // Navega al fragmento de detalles
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, ResearchWorkDetailFragment::class.java, bundle)
                 .addToBackStack(null)
@@ -60,15 +60,17 @@ class ResearchWorkListFragment : Fragment() {
         firestore.collection("research_works")
             .get()
             .addOnSuccessListener { documents ->
+                researchList.clear()
                 for (document in documents) {
                     val research = document.toObject(ResearchWork::class.java)
+                    research.id = document.id // Asigna el ID del documento al campo `id`
                     researchList.add(research)
                 }
                 adapter.notifyDataSetChanged()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(context, "Error al cargar los trabajos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error al cargar los trabajos: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-}
 
+}

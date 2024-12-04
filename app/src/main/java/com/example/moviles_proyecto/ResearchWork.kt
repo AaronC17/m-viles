@@ -1,6 +1,7 @@
 package com.example.moviles_proyecto
 
 data class ResearchWork(
+    var id: String = "", // Campo para almacenar el ID del documento
     val title: String = "",
     val area: String = "",
     val description: String = "",

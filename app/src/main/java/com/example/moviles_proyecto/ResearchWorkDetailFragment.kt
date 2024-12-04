@@ -1,6 +1,8 @@
 package com.example.moviles_proyecto
 
+import Comment
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviles_proyecto.databinding.FragmentResearchWorkDetailBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 
 class ResearchWorkDetailFragment : Fragment() {
@@ -57,6 +60,12 @@ class ResearchWorkDetailFragment : Fragment() {
 
         // Obtener los argumentos pasados al fragmento
         workId = arguments?.getString("work_id")
+        if (workId == null) {
+            Toast.makeText(context, "Error: ID del trabajo no encontrado", Toast.LENGTH_SHORT).show()
+        } else {
+            Log.d("ResearchWorkDetail", "workId recibido: $workId")
+        }
+
         titleTextView.text = arguments?.getString("title")
         areaTextView.text = arguments?.getString("area")
         descriptionTextView.text = arguments?.getString("description")
@@ -70,27 +79,26 @@ class ResearchWorkDetailFragment : Fragment() {
         submitCommentButton.setOnClickListener {
             val newCommentText = commentEditText.text.toString().trim()
             if (newCommentText.isNotEmpty() && workId != null) {
-                val newComment = Comment(user = "Anonymous", commentText = newCommentText)
+                val user = FirebaseAuth.getInstance().currentUser
+                val newComment = Comment(
+                    user = user?.displayName ?: "Anónimo",
+                    commentText = newCommentText,
+                    timestamp = System.currentTimeMillis()
+                )
                 saveCommentToFirestore(newComment)
-            } else {
-                Toast.makeText(context, "Error: no se puede enviar el comentario", Toast.LENGTH_SHORT).show()
             }
         }
 
         return binding.root
     }
 
-    // Cargar comentarios desde Firestore
     private fun loadComments() {
-        if (workId == null) {
-            Toast.makeText(context, "Error: ID del trabajo no encontrado", Toast.LENGTH_SHORT).show()
-            return
-        }
+        if (workId == null) return
 
         firestore.collection("research_works")
             .document(workId!!)
             .collection("comments")
-            .orderBy("timestamp", Query.Direction.ASCENDING) // Ordenar por timestamp (si está disponible)
+            .orderBy("timestamp", Query.Direction.ASCENDING)
             .get()
             .addOnSuccessListener { documents ->
                 comments.clear()
@@ -105,12 +113,8 @@ class ResearchWorkDetailFragment : Fragment() {
             }
     }
 
-    // Guardar un nuevo comentario en Firestore
     private fun saveCommentToFirestore(comment: Comment) {
-        if (workId == null) {
-            Toast.makeText(context, "Error: ID del trabajo no encontrado", Toast.LENGTH_SHORT).show()
-            return
-        }
+        if (workId == null) return
 
         firestore.collection("research_works")
             .document(workId!!)
@@ -120,6 +124,7 @@ class ResearchWorkDetailFragment : Fragment() {
                 comments.add(comment)
                 commentAdapter.notifyItemInserted(comments.size - 1)
                 commentEditText.text.clear()
+                Toast.makeText(context, "Comentario enviado", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(context, "Error al enviar el comentario", Toast.LENGTH_SHORT).show()
