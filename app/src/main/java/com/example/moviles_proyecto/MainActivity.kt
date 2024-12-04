@@ -11,17 +11,18 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         auth = FirebaseAuth.getInstance()
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
 
         // Cargar el fragmento inicial (Lista de trabajos)
         loadFragment(ResearchWorkListFragment())
+        updateMenuItems() // Actualizar opciones del menú según el estado del usuario
 
         // Configurar navegación
         bottomNavigationView.setOnItemSelectedListener { item ->
@@ -35,12 +36,16 @@ class MainActivity : AppCompatActivity() {
                     if (auth.currentUser != null) {
                         loadFragment(AddEditResearchWorkFragment())
                     } else {
-                        redirectToLogin() // Redirigir al login si no está autenticado
+                        Toast.makeText(this, "Inicia sesión para agregar trabajos", Toast.LENGTH_SHORT).show()
                     }
                     true
                 }
                 R.id.nav_logout -> {
                     logout() // Llamar a la función de cerrar sesión
+                    true
+                }
+                R.id.nav_login -> {
+                    login() // Mostrar mensaje de iniciar sesión o redirigir si es necesario
                     true
                 }
                 else -> false
@@ -54,16 +59,30 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun redirectToLogin() {
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK // Limpiar historial
-        startActivity(intent)
-        finish() // Cerrar la actividad actual
-    }
-
     private fun logout() {
         auth.signOut() // Cerrar la sesión en Firebase
         Toast.makeText(this, "Sesión cerrada exitosamente", Toast.LENGTH_SHORT).show()
-        redirectToLogin() // Redirigir al LoginActivity
+        updateMenuItems() // Actualizar las opciones del menú dinámicamente
+        loadFragment(ResearchWorkListFragment()) // Mantener al usuario en la página principal
+    }
+
+    private fun login() {
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            // Redirigir al LoginActivity si no hay un usuario autenticado
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "Ya has iniciado sesión", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    private fun updateMenuItems() {
+        val menu = bottomNavigationView.menu
+        val currentUser = auth.currentUser
+
+        menu.findItem(R.id.nav_logout).isVisible = currentUser != null
+        menu.findItem(R.id.nav_login).isVisible = currentUser == null
     }
 }

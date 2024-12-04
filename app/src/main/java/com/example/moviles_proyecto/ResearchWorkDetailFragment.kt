@@ -81,7 +81,7 @@ class ResearchWorkDetailFragment : Fragment() {
             if (newCommentText.isNotEmpty() && workId != null) {
                 val user = FirebaseAuth.getInstance().currentUser
                 val newComment = Comment(
-                    user = user?.displayName ?: "Anónimo",
+                    user = user?.displayName ?: "Visitante",
                     commentText = newCommentText,
                     timestamp = System.currentTimeMillis()
                 )

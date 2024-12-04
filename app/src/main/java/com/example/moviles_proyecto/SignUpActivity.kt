@@ -112,7 +112,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 selectedImageUri = result.data?.data
                 findViewById<ImageView>(R.id.profileImageView).setImageURI(selectedImageUri)
                 Toast.makeText(this, "Imagen seleccionada", Toast.LENGTH_SHORT).show()
