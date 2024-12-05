@@ -173,7 +173,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Correo: Levanto fierros porque culos ninguno"
+                    android:text="Correo: Lagosadriano62@gmail.com"
                     android:textSize="14sp"
                     android:textColor="#555555" />
             </LinearLayout>

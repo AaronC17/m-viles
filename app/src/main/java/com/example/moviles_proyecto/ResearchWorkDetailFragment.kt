@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moviles_proyecto.databinding.FragmentResearchWorkDetailBinding
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ResearchWorkDetailFragment : Fragment() {
@@ -60,6 +59,35 @@ class ResearchWorkDetailFragment : Fragment() {
         pdfUrl = arguments?.getString("pdfUrl")
         imageUrls = arguments?.getStringArrayList("imageUrls") ?: emptyList()
         workId = arguments?.getString("work_id")
+
+        // Recupera el nombre y el email del autor desde Firestore
+        if (!workId.isNullOrEmpty()) {
+            firestore.collection("research_works")
+                .document(workId!!)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // Recuperar y asignar datos correctamente
+                        val authorName = document.getString("authorName") // Cambiar a "authorName"
+
+                        // Verificar valor y asignar al TextView
+                        binding.authorNameTextView.text = if (!authorName.isNullOrEmpty()) {
+                            authorName
+                        } else {
+                            "Autor desconocido"
+                        }
+                    } else {
+                        Toast.makeText(context, "El trabajo no existe en la base de datos", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Error al cargar datos del autor: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(context, "El ID del trabajo no está disponible", Toast.LENGTH_SHORT).show()
+        }
+
+
 
         if (pdfUrl.isNullOrEmpty()) {
             binding.viewPdfButton.isEnabled = false
@@ -111,11 +139,8 @@ class ResearchWorkDetailFragment : Fragment() {
             return
         }
 
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        val userName = currentUser?.displayName ?: "Anónimo"
-
         val commentData = hashMapOf(
-            "user" to userName,
+            "user" to "Visitante", // Cambia esto si tienes usuarios registrados
             "comment" to comment,
             "rating" to rating,
             "timestamp" to System.currentTimeMillis()
@@ -136,7 +161,6 @@ class ResearchWorkDetailFragment : Fragment() {
             }
     }
 
-
     private fun loadComments() {
         if (workId.isNullOrEmpty()) {
             Toast.makeText(context, "No se pueden cargar los comentarios sin el ID del trabajo", Toast.LENGTH_SHORT).show()
@@ -151,7 +175,7 @@ class ResearchWorkDetailFragment : Fragment() {
             .addOnSuccessListener { documents ->
                 val comments = documents.map { document ->
                     Comment(
-                        user = document.getString("user") ?: "Anónimo",
+                        user = document.getString("user") ?: "Visitante",
                         commentText = document.getString("comment") ?: "",
                         rating = document.getDouble("rating")?.toInt() ?: 0,
                         timestamp = document.getLong("timestamp") ?: 0L
