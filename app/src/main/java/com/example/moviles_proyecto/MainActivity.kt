@@ -48,6 +48,10 @@ class MainActivity : AppCompatActivity() {
                     login() // Mostrar mensaje de iniciar sesión o redirigir si es necesario
                     true
                 }
+                R.id.nav_about_us -> {
+                    loadFragment(AboutUsFragment()) // Navegar al fragmento "Sobre Nosotros"
+                    true
+                }
                 else -> false
             }
         }
@@ -76,7 +80,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Ya has iniciado sesión", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     private fun updateMenuItems() {
         val menu = bottomNavigationView.menu
