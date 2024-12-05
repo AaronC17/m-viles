@@ -1,41 +1,49 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp">
 
-    <!-- Nombre del usuario -->
-    <TextView
-        android:id="@+id/userTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nombre del Usuario"
-        android:textStyle="bold"
-        android:layout_marginBottom="4dp"
-        />
-
-    <!-- Calificación como estrellas -->
-    <RatingBar
-        android:id="@+id/commentRatingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:numStars="5"
-        android:stepSize="1.0"
-        android:rating="0"
-        android:isIndicator="true"
-        android:layout_marginBottom="4dp"
-        android:layout_marginStart="-40dp"
-        android:scaleX="0.7"
-        android:scaleY="0.7"
-        style="@style/CustomRatingBar" />
-
-
-    <!-- Texto del comentario -->
-    <TextView
-        android:id="@+id/commentTextView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Texto del comentario"
-        android:layout_marginBottom="8dp" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- Nombre del usuario -->
+        <TextView
+            android:id="@+id/userTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del Usuario"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Calificación como estrellas -->
+        <RatingBar
+            android:id="@+id/commentRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-5dp"
+            android:numStars="5"
+            android:stepSize="1.0"
+            android:rating="0"
+            android:isIndicator="true"
+            android:scaleX="0.9"
+            android:scaleY="0.9"
+            android:layout_marginBottom="4dp"
+            style="@style/Widget.AppCompat.RatingBar.Small" />
+
+        <!-- Texto del comentario -->
+        <TextView
+            android:id="@+id/commentTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Texto del comentario"
+            android:layout_marginBottom="8dp" />
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
