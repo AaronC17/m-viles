@@ -1,9 +1,20 @@
 <resources>
     <string name="app_name">moviles-proyecto</string>
-    <string-array name="areas_array">
-        <item>Todas</item>
+    <string-array name="grades_array">
+        <item>Todos</item>
+        <item>Primaria</item>
+        <item>Secundaria</item>
+        <item>Preparatoria</item>
+        <item>Universidad</item>
+    </string-array>
+
+    <string-array name="subjects_array">
+        <item>Todos</item>
         <item>Matemáticas</item>
         <item>Biología</item>
-        <item>Ciencias Sociales</item>
+        <item>Química</item>
+        <item>Física</item>
+        <item>Historia</item>
+        <item>Ingeniería</item>
     </string-array>
 </resources>

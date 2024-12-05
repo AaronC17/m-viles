@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <!-- Título del Spinner -->
+    <!-- Título del Spinner de nivel escolar -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:layout_marginBottom="8dp"
         android:textColor="#333333" />
 
-    <!-- Contenedor para el Spinner con fondo personalizado -->
+    <!-- Contenedor para el Spinner de nivel escolar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,6 +26,33 @@
         <!-- Spinner para seleccionar el grado escolar -->
         <Spinner
             android:id="@+id/gradeSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
+
+    <!-- Título del Spinner de materias -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Materia"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        android:textColor="#333333" />
+
+    <!-- Contenedor para el Spinner de materias -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_background"
+        android:padding="12dp"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp">
+
+        <!-- Spinner para seleccionar la materia -->
+        <Spinner
+            android:id="@+id/subjectSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown" />

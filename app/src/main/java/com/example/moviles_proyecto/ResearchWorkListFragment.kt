@@ -11,7 +11,6 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.moviles_proyecto.databinding.FragmentResearchWorkListBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -19,9 +18,9 @@ class ResearchWorkListFragment : Fragment() {
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var researchList: MutableList<ResearchWork>
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: ResearchWorkAdapter
     private lateinit var gradeSpinner: Spinner
+    private lateinit var subjectSpinner: Spinner
+    private lateinit var adapter: ResearchWorkAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,18 +28,15 @@ class ResearchWorkListFragment : Fragment() {
     ): View? {
         val binding = FragmentResearchWorkListBinding.inflate(inflater, container, false)
 
-        // Inicializa Firebase y las listas
+        // Inicializar Firestore y listas
         firestore = FirebaseFirestore.getInstance()
         researchList = mutableListOf()
 
-        // Configura el RecyclerView
-        recyclerView = binding.recyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
-
-        // Inicializa el adaptador y configura el clic en los elementos
+        // Configurar RecyclerView
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = ResearchWorkAdapter(researchList) { selectedWork ->
             val bundle = Bundle().apply {
-                putString("work_id", selectedWork.id) // Pasa el ID del trabajo
+                putString("work_id", selectedWork.id)
                 putString("title", selectedWork.title)
                 putString("area", selectedWork.area)
                 putString("description", selectedWork.description)
@@ -57,35 +53,49 @@ class ResearchWorkListFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
 
-        // Configura el Spinner para el filtro por grado
-        gradeSpinner = binding.gradeSpinner
+        // Inicializar Spinners
+        gradeSpinner = binding.root.findViewById(R.id.gradeSpinner)
+        subjectSpinner = binding.root.findViewById(R.id.subjectSpinner)
+
+        // Configuración del Spinner de grado
         val gradeOptions = listOf("Todos", "Primaria", "Secundaria", "Preparatoria", "Universidad")
-        val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, gradeOptions)
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        gradeSpinner.adapter = spinnerAdapter
+        gradeSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, gradeOptions)
 
-        // Configura la lógica del filtro
-        gradeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val selectedGrade = gradeOptions[position]
-                loadResearchWorks(if (selectedGrade == "Todos") null else selectedGrade)
-            }
+        // Configuración del Spinner de materias
+        val subjectOptions = listOf("Todos", "Matemáticas", "Biología", "Química", "Física", "Historia", "Ingeniería")
+        subjectSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, subjectOptions)
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        // Configurar lógica de selección de Spinners
+        gradeSpinner.onItemSelectedListener = createFilterListener()
+        subjectSpinner.onItemSelectedListener = createFilterListener()
 
-        // Carga inicial: todos los trabajos
-        loadResearchWorks(null)
+        // Cargar datos iniciales
+        loadResearchWorks(null, null)
 
         return binding.root
     }
 
+    private fun createFilterListener() = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            val selectedGrade = if (gradeSpinner.selectedItemPosition == 0) null else gradeSpinner.selectedItem.toString()
+            val selectedSubject = if (subjectSpinner.selectedItemPosition == 0) null else subjectSpinner.selectedItem.toString()
+            loadResearchWorks(selectedGrade, selectedSubject)
+        }
 
-    private fun loadResearchWorks(grade: String?) {
-        val query = if (grade != null) {
+        override fun onNothingSelected(parent: AdapterView<*>) {}
+    }
+
+    private fun loadResearchWorks(grade: String?, subject: String?) {
+        val query = if (grade != null && subject != null) {
+            firestore.collection("research_works")
+                .whereEqualTo("authorGrade", grade)
+                .whereEqualTo("area", subject) // Filtrar por área (materia)
+        } else if (grade != null) {
             firestore.collection("research_works").whereEqualTo("authorGrade", grade)
+        } else if (subject != null) {
+            firestore.collection("research_works").whereEqualTo("area", subject) // Filtrar por área (materia)
         } else {
             firestore.collection("research_works")
         }
@@ -95,7 +105,7 @@ class ResearchWorkListFragment : Fragment() {
                 researchList.clear()
                 for (document in documents) {
                     val research = document.toObject(ResearchWork::class.java)
-                    research.id = document.id // Asigna el ID del documento
+                    research.id = document.id
 
                     // Log para verificar los datos cargados
                     Log.d("ResearchWorkList", "ID: ${research.id}")
@@ -110,5 +120,4 @@ class ResearchWorkListFragment : Fragment() {
                 Toast.makeText(context, "Error al cargar los trabajos: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 }

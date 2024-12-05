@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class ResearchWorkAdapter(
-    private var researchWorks: List<ResearchWork>, // Cambiado a 'var' para permitir actualizaciones
+    private var researchWorks: List<ResearchWork>,
     private val onItemClicked: (ResearchWork) -> Unit
 ) : RecyclerView.Adapter<ResearchWorkAdapter.ResearchWorkViewHolder>() {
 
@@ -17,12 +17,10 @@ class ResearchWorkAdapter(
         private val authorTextView: TextView = itemView.findViewById(R.id.authorTextView)
 
         fun bind(researchWork: ResearchWork) {
-            // Asigna los datos al diseño
             titleTextView.text = researchWork.title
             areaTextView.text = researchWork.area
             authorTextView.text = "Autor: ${researchWork.authorName}"
 
-            // Configura el clic para enviar el objeto completo al fragmento
             itemView.setOnClickListener { onItemClicked(researchWork) }
         }
     }
@@ -38,9 +36,8 @@ class ResearchWorkAdapter(
 
     override fun getItemCount(): Int = researchWorks.size
 
-    // Método para actualizar los datos del adaptador
     fun updateData(newResearchWorks: List<ResearchWork>) {
         researchWorks = newResearchWorks
-        notifyDataSetChanged() // Notifica a RecyclerView que los datos han cambiado
+        notifyDataSetChanged()
     }
 }

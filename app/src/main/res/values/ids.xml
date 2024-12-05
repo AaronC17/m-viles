@@ -2,4 +2,7 @@
 <resources>
     <item name="fragment_container" type="id" />
     <item name="bottom_navigation" type="id" />
+    <item name="authorTextView" type="id" />
+    <item name="recyclerView" type="id" />
+    <item name="subjectSpinner" type="id" />
 </resources>

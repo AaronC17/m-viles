@@ -9,5 +9,6 @@ data class ResearchWork(
     val recommendations: String = "",
     val imageUrls: List<String> = listOf(),
     val pdfUrl: String = "",
-    val authorName: String = ""
+    val authorName: String = "",
+    val subject: String = "" // Nuevo campo para la materia
 )
