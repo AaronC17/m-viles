@@ -8,7 +8,13 @@
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="56dp"
+        android:padding="8dp"
+        android:elevation="4dp"
+         />
 
     <!-- Bottom Navigation con botones y etiquetas más pequeñas -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,7 +24,7 @@
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_nav_crud"
         app:itemIconSize="20dp"
-    app:labelVisibilityMode="labeled"
-    app:itemTextAppearanceActive="@android:style/TextAppearance.Small"
-    app:itemTextAppearanceInactive="@android:style/TextAppearance.Small" />
+        app:labelVisibilityMode="labeled"
+        app:itemTextAppearanceActive="@android:style/TextAppearance.Small"
+        app:itemTextAppearanceInactive="@android:style/TextAppearance.Small" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
